@@ -52,4 +52,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.fail(new ApiError("INTERNAL_ERROR", "Something went wrong. Please try again.")));
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.fail(new ApiError("VALIDATION_ERROR", ex.getMessage())));
+    }
 }
