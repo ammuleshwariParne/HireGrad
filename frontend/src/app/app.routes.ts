@@ -13,9 +13,40 @@ export const routes: Routes = [
     path: 'student',
     canActivate: [authGuard, roleGuard('STUDENT')],
     loadComponent: () =>
-      import('./features/student/student-home/student-home.component').then(
-        (m) => m.StudentHomeComponent
+      import('./features/student/layout/student-layout.component').then(
+        (m) => m.StudentLayoutComponent
       ),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'home' },
+      {
+        path: 'home',
+        loadComponent: () =>
+          import('./features/student/home/student-home.component').then(
+            (m) => m.StudentHomeComponent
+          ),
+      },
+      {
+        path: 'jobs',
+        loadComponent: () =>
+          import('./features/student/jobs/job-dashboard.component').then(
+            (m) => m.JobDashboardComponent
+          ),
+      },
+      {
+        path: 'tracker',
+        loadComponent: () =>
+          import('./features/student/tracker/application-tracker.component').then(
+            (m) => m.ApplicationTrackerComponent
+          ),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/student/profile/student-profile.component').then(
+            (m) => m.StudentProfileComponent
+          ),
+      },
+    ],
   },
   {
     path: 'admin',

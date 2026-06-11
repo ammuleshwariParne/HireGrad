@@ -1,0 +1,112 @@
+<div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+
+  <!-- HERO greeting (parallax aurora on mouse-move) -->
+  <section (mousemove)="onAuroraMove($event)" (mouseleave)="onAuroraLeave()"
+           class="relative overflow-hidden rounded-3xl p-6 text-white shadow-xl animate-fade-in-up sm:p-8 lg:p-10"
+           style="background-image:linear-gradient(135deg,#047857,#059669 45%,#34d399)">
+    <div class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl"
+         [style.transform]="'translate(' + auroraX() + 'px,' + auroraY() + 'px)'" style="transition:transform .2s ease-out"></div>
+    <div class="pointer-events-none absolute -bottom-24 right-0 h-96 w-96 rounded-full bg-teal-200/30 blur-3xl"
+         [style.transform]="'translate(' + (-auroraX()) + 'px,' + (-auroraY()) + 'px)'" style="transition:transform .2s ease-out"></div>
+
+    <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <p class="text-sm font-medium text-emerald-50/80">{{ greeting }},</p>
+        <h1 class="mt-1 text-3xl font-bold tracking-tight sm:text-4xl" style="font-family:'Bricolage Grotesque',ui-sans-serif">
+          {{ firstName() }} 👋
+        </h1>
+        <p class="mt-3 max-w-md text-sm leading-relaxed text-emerald-50/90">
+          Here’s a quick overview of your placement journey. Explore eligible roles and keep your applications on track.
+        </p>
+      </div>
+
+      <!-- floating stat chips (computed) -->
+      <div class="flex flex-wrap gap-3">
+        <div class="rounded-2xl bg-white/15 px-4 py-3 ring-1 ring-white/20 backdrop-blur animate-float">
+          <div class="text-2xl font-bold">{{ applicationsInProgress() }}</div>
+          <div class="text-[11px] uppercase tracking-wide text-emerald-50/80">In progress</div>
+        </div>
+        <div class="rounded-2xl bg-white/15 px-4 py-3 ring-1 ring-white/20 backdrop-blur animate-float" style="animation-delay:1s">
+          <div class="text-2xl font-bold">{{ eligibleRolesCount() }}</div>
+          <div class="text-[11px] uppercase tracking-wide text-emerald-50/80">Eligible roles</div>
+        </div>
+        <div class="rounded-2xl bg-white/15 px-4 py-3 ring-1 ring-white/20 backdrop-blur animate-float" style="animation-delay:2s">
+          <div class="text-2xl font-bold">{{ upcomingEventsCount() }}</div>
+          <div class="text-[11px] uppercase tracking-wide text-emerald-50/80">Upcoming</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AT-A-GLANCE SUMMARY CARDS -->
+  <section class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    @for (card of summaryCards(); track card.label; let i = $index) {
+      <a [routerLink]="card.link" appTilt
+         class="group block rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+         [style.animation-delay]="(i * 80) + 'ms'"
+         style="transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <div class="flex items-center justify-between">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 dark:bg-brand-500/15 dark:text-brand-300">
+            @switch (card.icon) {
+              @case ('clipboard') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /></svg> }
+              @case ('briefcase') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg> }
+              @case ('calendar') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg> }
+            }
+          </span>
+          <span class="text-slate-300 transition group-hover:translate-x-1 group-hover:text-brand-500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+          </span>
+        </div>
+        <div class="mt-4 text-3xl font-bold text-slate-900 dark:text-white">{{ card.value }}</div>
+        <div class="mt-1 text-sm font-medium text-slate-700 dark:text-slate-200">{{ card.label }}</div>
+        <div class="text-xs text-slate-400">{{ card.hint }}</div>
+      </a>
+    }
+  </section>
+
+  <!-- QUICK ACTIONS + PROFILE RING -->
+  <section class="mt-6 grid gap-4 lg:grid-cols-3">
+    <div class="grid gap-4 sm:grid-cols-3 lg:col-span-2">
+      @for (a of quickActions; track a.label; let i = $index) {
+        <a [routerLink]="a.link" appTilt
+           class="group flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+           [style.animation-delay]="(i * 80 + 240) + 'ms'"
+           style="transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl text-emerald-950 shadow" style="background-image:linear-gradient(135deg,#6ee7b7,#34d399)">
+            @switch (a.icon) {
+              @case ('briefcase') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg> }
+              @case ('clipboard') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /></svg> }
+              @case ('user') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg> }
+            }
+          </span>
+          <div>
+            <div class="font-semibold text-slate-900 dark:text-white">{{ a.label }}</div>
+            <div class="text-xs text-slate-400">{{ a.desc }}</div>
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- profile completeness ring -->
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900" style="animation-delay:480ms">
+      <div class="relative mx-auto h-32 w-32">
+        <svg viewBox="0 0 120 120" class="h-32 w-32 -rotate-90">
+          <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="text-slate-100 dark:text-slate-800" stroke="currentColor" />
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#34d399" stroke-width="10" stroke-linecap="round"
+                  [attr.stroke-dasharray]="ringCircumference" [attr.stroke-dashoffset]="ringDashoffset()"
+                  style="transition:stroke-dashoffset 1s ease" />
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span class="text-2xl font-bold text-slate-900 dark:text-white">{{ profileCompleteness() }}%</span>
+          <span class="text-[11px] text-slate-400">complete</span>
+        </div>
+      </div>
+      <p class="mt-4 text-sm font-medium text-slate-700 dark:text-slate-200">Finish your profile</p>
+      <p class="mt-1 text-xs text-slate-400">A complete profile improves your eligibility matches.</p>
+      <a routerLink="/student/profile"
+         class="mt-4 inline-flex items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+        Complete profile
+      </a>
+    </div>
+  </section>
+</div>
