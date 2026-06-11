@@ -4,5 +4,5 @@
 
 html, body { height: 100%; }
 body {
-  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  @apply bg-emerald-50/40 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
 }

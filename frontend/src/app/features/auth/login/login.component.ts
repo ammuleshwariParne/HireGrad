@@ -8,7 +8,6 @@ import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/th
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ThemeToggleComponent],
   templateUrl: './login.component.html',
 })
@@ -22,19 +21,18 @@ export class LoginComponent {
   loading = signal(false);
   errorMsg = signal<string | null>(null);
 
-  form = this.fb.nonNullable.group({
-    username: ['', [Validators.required]],
-    password: ['', [Validators.required, Validators.minLength(4)]],
-  });
-  
-   readonly features = [
+  readonly features = [
     'Real-time application tracking',
     'Auto eligibility checks against your profile',
     'Centralized placement analytics',
   ];
-  get f() {
-    return this.form.controls;
-  }
+
+  form = this.fb.nonNullable.group({
+    username: ['', [Validators.required]],
+    password: ['', [Validators.required, Validators.minLength(4)]],
+  });
+
+  get f() { return this.form.controls; }
 
   setRole(role: UserRole): void {
     this.role.set(role);
@@ -51,14 +49,11 @@ export class LoginComponent {
       this.form.markAllAsTouched();
       return;
     }
-
     this.loading.set(true);
     const { username, password } = this.form.getRawValue();
-
     this.auth.login({ username, password, role: this.role() }).subscribe({
       next: (user) => {
         this.loading.set(false);
-        // Role-based redirect
         this.router.navigate([user.role === 'ADMIN' ? '/admin' : '/student']);
       },
       error: (err) => {
