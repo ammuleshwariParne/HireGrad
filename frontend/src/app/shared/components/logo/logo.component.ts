@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-logo',
   imports: [RouterLink],
   template: `
-    <a routerLink="/student/home"
+    <a [routerLink]="homeLink"
        class="flex items-center gap-2.5 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
       <span class="flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-lg shadow-brand-500/30"
             style="background-image:linear-gradient(135deg,#6ee7b7,#34d399)">
@@ -20,4 +20,6 @@ import { RouterLink } from '@angular/router';
     </a>
   `,
 })
-export class LogoComponent {}
+export class LogoComponent {
+  @Input() homeLink = '/student/home';
+}

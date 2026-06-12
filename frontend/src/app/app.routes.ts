@@ -52,9 +52,15 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [authGuard, roleGuard('ADMIN')],
     loadComponent: () =>
-      import('./features/admin/admin-home/admin-home.component').then(
-        (m) => m.AdminHomeComponent
-      ),
+      import('./features/admin/layout/admin-layout.component').then((m) => m.AdminLayoutComponent),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'home' },
+      { path: 'home', loadComponent: () => import('./features/admin/home/admin-home.component').then((m) => m.AdminHomeComponent) },
+      { path: 'jobs', loadComponent: () => import('./features/admin/jobs/job-posting.component').then((m) => m.JobPostingComponent) },
+      { path: 'applications', loadComponent: () => import('./features/admin/applications/application-management.component').then((m) => m.ApplicationManagementComponent) },
+      { path: 'students', loadComponent: () => import('./features/admin/students/student-account-creation.component').then((m) => m.StudentAccountCreationComponent) },
+      { path: 'profile', loadComponent: () => import('./features/admin/profile/admin-profile.component').then((m) => m.AdminProfileComponent) },
+    ],
   },
   { path: '**', redirectTo: 'login' },
 ];
